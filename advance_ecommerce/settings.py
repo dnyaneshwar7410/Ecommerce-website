@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+
 ROOT_URLCONF = 'advance_ecommerce.urls'
 
 TEMPLATES = [
@@ -75,6 +77,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'advance_ecommerce.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',   # 👈 our new backend
+    'django.contrib.auth.backends.ModelBackend',  # keep this for admin login
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -144,3 +150,16 @@ MESSAGE_TAGS = {
     messages.ERROR: "danger",
     
 }
+
+
+# SMTP Configuration
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'dnspark28@gmail.com'
+EMAIL_HOST_PASSWORD = 'gebhobksjjmfczae'
+EMAIL_USE_TLS = True
+
+
+
+
