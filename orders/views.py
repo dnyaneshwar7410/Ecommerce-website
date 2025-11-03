@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from carts.models import CartItem
+from carts.models import CartItem, Product
 from .forms import OrderForm
 from .models import Order ,Payment, OrderProduct
 import datetime
 import json
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+
 
 # Create your views here.
 
@@ -47,12 +50,33 @@ def payments(request):
         orderproduct.variations.set(product_variation)
         orderproduct.save()
 
+         # reduce the quantity of the sold products
+        product = Product.objects.get(id=item.product_id)
+        product.stock -= item.quantity
+        product.save()
 
-
+    # Clear cart
+    CartItem.objects.filter(user=request.user).delete()
     
-    return render(request, 'orders/payments.html')
+    # send order recieved email to customer
+    mail_subject = 'Thanks for your order!'         
+    message = render_to_string('orders/order_recieved_email.html',{
+                'user':request.user,
+                'order':order,
+                
+    })
+    to_email = request.user.email
+    send_email = EmailMessage(mail_subject, message, to=[to_email])
+    send_email.send()
 
+    data = {
 
+        'order_number':order.order_number,
+        'payment_id':payment.payment_id,
+    }
+    
+    return JsonResponse(data)
+  
 
 def place_order(request,total=0, quantity=0):
     current_user = request.user
@@ -119,3 +143,29 @@ def place_order(request,total=0, quantity=0):
 
 
 
+def order_complete(request):
+    order_number = request.GET.get('order_number')   
+    transID = request.GET.get('payment_id')
+
+    try:
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        ordered_products = OrderProduct.objects.filter(order_id=order.id)
+        subtotal = 0
+        for i in ordered_products:
+            subtotal += i.product_price * i.quantity
+
+        payment = Payment.objects.get(payment_id = transID)
+
+        context = {
+            'order':order,
+            'ordered_products':ordered_products,
+            'order_number':order.order_number,
+            'transID':payment.payment_id,
+            'payment':payment,
+            'subtotal':subtotal,
+        }
+        return render(request, 'orders/order_complete.html',context)
+
+    
+    except (Payment.DoesNotExist, Order.DoesNotExist):
+        return redirect('home')
