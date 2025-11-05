@@ -8,12 +8,19 @@
         <!-- Product Image -->
         <aside class="col-md-6">
           <article class="gallery-wrap">
-            <div class="img-big-wrap">
-              <a href="#"
-                ><img src="{{ single_product.images.url }}" class="img-fluid"
-              /></a>
+            <div class="img-big-wrap mainImage">
+               <center><img src="{{ single_product.images.url }}" class="img-fluid"/></center>
             </div>
           </article>
+          <ul class="thum">
+            <li>
+              <a href="{{single_product.images.url}}" target="mainImage"><img src="{{single_product.images.url}}" alt="Product Image"></a>
+
+              {% for image in product_gallery  %}
+              <a href="{{image.image.url}}" target="mainImage"><img src="{{image.image.url}}" alt="Product Image"></a>
+              {% endfor %}
+            </li>
+          </ul>
         </aside>
 
         <!-- Product Details -->
@@ -37,9 +44,8 @@
               <br>
 
               <div class="mb-3">
-                <var class="price h4 text-primary"
-                  >$ {{ single_product.price }}</var
-                >
+                <var class="price h4 text-primary">$ {{ single_product.price }}</var>
+               
               </div>
 
               <p>{{ single_product.description }}</p>
