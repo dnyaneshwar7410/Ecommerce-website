@@ -1,11 +1,18 @@
 {
   "version": 2,
-  "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
-  "installCommand": "pip install -r requirements.txt",
-  "outputDirectory": "staticfiles",
-  "framework": "django",
+  "builds": [
+    {
+      "src": "advance_ecommerce/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
   "routes": [
-    { "src": "/static/(.*)", "dest": "/static/$1" },
-    { "src": "/(.*)", "dest": "advance_ecommerce/wsgi.py" }
-  ]
+    {
+      "src": "/(.*)",
+      "dest": "advance_ecommerce/wsgi.py"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "advance_ecommerce.settings"
+  }
 }
