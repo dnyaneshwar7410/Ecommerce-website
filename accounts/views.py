@@ -147,19 +147,18 @@ def activate(request, uidb64, token):
         messages.error(request, 'Invalid activation link')
         return redirect('register')
 
-        
-@login_required
+@login_required(login_url='login')
 def dashboard(request):
-    userprofile = get_object_or_404(UserProfile, user=request.user)
-    orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
-    order_count = orders.count()
+    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+    orders_count = orders.count()
+
+    userprofile = UserProfile.objects.get_or_create(user=request.user)
 
     context = {
-        'order_count':order_count,
-        'userprofile':userprofile,
+        'orders_count': orders_count,
+        'userprofile': userprofile,
     }
-    return render(request,'accounts/dashboard.html',context)
-
+    return render(request, 'accounts/dashboard.html', context)
 
 def forgotPassword(request):
     if request.method == 'POST':
