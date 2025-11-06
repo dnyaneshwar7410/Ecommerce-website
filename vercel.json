@@ -13,6 +13,7 @@
     }
   ],
   "env": {
-    "DJANGO_SETTINGS_MODULE": "advance_ecommerce.settings"
+    "DJANGO_SETTINGS_MODULE": "advance_ecommerce.settings",
+    "PYTHONUNBUFFERED": "1"
   }
 }
