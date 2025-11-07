@@ -72,9 +72,7 @@ class Account(AbstractBaseUser):
     def has_module_perms(self,add_label):
         return True
 
-    @property
-    def is_superuser(self):
-        return self.is_superadmin
+    
 
 
 class UserProfile(models.Model):
