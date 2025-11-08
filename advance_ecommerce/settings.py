@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['django-ecommerce-website-env.eba-msd3iiyq.us-west-2.elasticbeanstalk.com']
 
 # Applications
 INSTALLED_APPS = [
